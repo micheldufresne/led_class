@@ -9,7 +9,9 @@ RGBLed::RGBLed(uint8_t pinR, uint8_t pinG, uint8_t pinB, uint8_t niveauOff)
     canalR = LedBase::allocateChannel();
     canalG = LedBase::allocateChannel();
     canalB = LedBase::allocateChannel();
-
+    pinMode(pinR, OUTPUT);
+    pinMode(pinG, OUTPUT);
+    pinMode(pinB, OUTPUT);
     if (canalR < 0 || canalG < 0 || canalB < 0)
     {
         Serial.println("Erreur: pas assez de canaux LEDC");
@@ -40,6 +42,7 @@ void RGBLed::eteint()
     fading = false;
 }
 
+
 void RGBLed::setCouleur(uint8_t r, uint8_t g, uint8_t b)
 {
     if (niveauOff==0) {
@@ -51,7 +54,7 @@ void RGBLed::setCouleur(uint8_t r, uint8_t g, uint8_t b)
         etatG = 255-g;
         etatB = 255-b;
     }
-    Serial.printf("R=%u, V=%u, B=%u\n",etatR,etatG,etatB);
+    //Serial.printf("R=%u, V=%u, B=%u\n",etatR,etatG,etatB);
     ledcWrite(canalR, etatR);
     ledcWrite(canalG, etatG);
     ledcWrite(canalB, etatB);
@@ -120,3 +123,4 @@ void RGBLed::tickUpdate(uint64_t tick)
         }
     }
 }
+

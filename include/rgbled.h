@@ -10,8 +10,7 @@ public:
     void setCouleur(uint8_t r, uint8_t g, uint8_t b);  
     void setCouleur(uint32_t hexColor); // hexcolor de la forme : 0x10A0FF
 
-private:
-    void tickUpdate(uint64_t tick) override;
+    private : void tickUpdate(uint64_t tick) override;
 
     uint8_t pinR, pinG, pinB;
     uint8_t niveauOff; //niveau de tension de la broche quand la led est éteinte
@@ -20,3 +19,4 @@ private:
     uint16_t fadeStartR = 0, fadeStartG = 0, fadeStartB = 0;
 
 };
+

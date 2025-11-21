@@ -46,6 +46,18 @@ void LedBase::setAutoExtinction(bool autoOFF0, uint16_t duree_ms, uint16_t fade_
     }
 }
 
+void LedBase::setAutoExtinction(bool autoOFF0)
+{
+    autoOff = autoOFF0;
+
+    if (autoOff)
+    {
+        setAutoExtinction(true, 1000, 200); // défaut 1s puis 200ms de fade
+    } else
+    {
+        setAutoExtinction(false,0,0); //0 pour durée et fade par défaut
+    }   
+}
 
 void LedBase::begin() {
     const esp_timer_create_args_t args = {

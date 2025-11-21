@@ -14,7 +14,7 @@ class LedBase
         virtual void tickUpdate(uint64_t tick) = 0; // appelée toutes les 50ms
         static void begin();
         void setAutoExtinction(bool autoOFF, uint16_t duree_ms, uint16_t fade_ms);
-
+        void setAutoExtinction(bool autoOFF);
     protected:    
         static void timerCallback(void *arg);
         static bool usedChannels[8]; // 8 canaux high-speed
