@@ -9,7 +9,8 @@ public:
 
     void allume();
     void eteint();
-
+    bool estEteint();
+    bool estAllume();
 private:
     void tickUpdate(uint64_t tick) override;
 

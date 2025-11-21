@@ -1,8 +1,6 @@
 #include "RGBLed.h"
 
 
-
-
 RGBLed::RGBLed(uint8_t pinR, uint8_t pinG, uint8_t pinB, uint8_t niveauOff)
     : pinR(pinR), pinG(pinG), pinB(pinB), niveauOff(niveauOff) {
     // assigner un canal unique par broche quelle que soit la led
@@ -74,6 +72,11 @@ void RGBLed::setCouleur(uint32_t hexColor)
     uint8_t b = hexColor & 0xFF;
 
     setCouleur(r, g, b); // réutilise la version existante
+}
+
+bool RGBLed::estEteint()
+{
+    return (etatR == niveauOff && etatG == niveauOff && etatB == niveauOff);
 }
 
 void RGBLed::tickUpdate(uint64_t tick)

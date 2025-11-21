@@ -38,6 +38,16 @@ void LED::allume()
     }
 }
 
+bool LED::estEteint()
+{
+    return (etat == niveauOff);
+}
+
+bool LED::estAllume()
+{
+    return (etat == niveauOn);
+}
+
 void LED::tickUpdate(uint64_t tick)
 {
     if (autoOff && active && !fading && tick >= finTick)
