@@ -15,11 +15,13 @@ class LedBase
         static void begin();
         void setAutoExtinction(bool autoOFF, uint16_t duree_ms, uint16_t fade_ms);
         void setAutoExtinction(bool autoOFF);
+        void bloque();
+        void debloque();
     protected:    
         static void timerCallback(void *arg);
         static bool usedChannels[8]; // 8 canaux high-speed
         static int allocateChannel();
-
+        bool bloquee = false;
         bool ready = false;
         uint16_t dureeTicks = 0;
         uint64_t finTick = 0; // tic de fin d'allumage

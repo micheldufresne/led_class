@@ -31,6 +31,8 @@ RGBLed::RGBLed(uint8_t pinR, uint8_t pinG, uint8_t pinB, uint8_t niveauOff)
 
 void RGBLed::eteint()
 {
+    if (bloquee)
+        return; // on ignore toutes les commandes sauf debloque()
     etatR = etatG = etatB = niveauOff;
     ledcWrite(canalR, niveauOff);
     ledcWrite(canalG, niveauOff);
@@ -43,6 +45,8 @@ void RGBLed::eteint()
 
 void RGBLed::setCouleur(uint8_t r, uint8_t g, uint8_t b)
 {
+    if (bloquee)
+        return; // on ignore toutes les commandes sauf debloque()
     if (niveauOff==0) {
         etatR = r;
         etatG = g;
@@ -67,6 +71,8 @@ void RGBLed::setCouleur(uint8_t r, uint8_t g, uint8_t b)
 
 void RGBLed::setCouleur(uint32_t hexColor)
 {
+    if (bloquee)
+        return; // on ignore toutes les commandes sauf debloque()
     uint8_t r = (hexColor >> 16) & 0xFF;
     uint8_t g = (hexColor >> 8) & 0xFF;
     uint8_t b = hexColor & 0xFF;
@@ -81,6 +87,8 @@ bool RGBLed::estEteint()
 
 void RGBLed::tickUpdate(uint64_t tick)
 {
+    if (bloquee)
+        return; // on ignore toutes les commandes sauf debloque()
     if (!ready)
         return;
     if (autoOff && active && !fading && tick >= finTick)

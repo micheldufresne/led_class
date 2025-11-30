@@ -21,14 +21,17 @@ LED::LED(uint8_t pin, uint8_t niveauOff)
 
 void LED::eteint()
 {
-    etat = niveauOff;
+    if (bloquee) return; //on ignore toutes les commandes sauf debloque()
+    {etat = niveauOff;
     ledcWrite(canal, niveauOff);
     active = false;
-    fading=false;
+    fading=false;}
+    
 }
 
 void LED::allume()
 {
+    if (bloquee) return; // on ignore toutes les commandes sauf debloque()
     etat = niveauOn;
     ledcWrite(canal, niveauOn);
     active = true;    
@@ -50,6 +53,7 @@ bool LED::estAllume()
 
 void LED::tickUpdate(uint64_t tick)
 {
+    if (bloquee) return; // led bloquée, on n'agit pas
     if (autoOff && active && !fading && tick >= finTick)
     {
         if (fadeDuration > 0)

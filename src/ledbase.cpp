@@ -18,6 +18,15 @@ LedBase::LedBase(){
     }
 }
 
+void LedBase::bloque()
+{
+    bloquee = true;
+}
+void LedBase::debloque()
+{
+    bloquee = false;
+}
+
 int LedBase::allocateChannel()
 {
     //chaque broche commandée en PWM doit disposer d'un canal propre 
