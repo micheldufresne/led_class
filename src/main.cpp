@@ -178,6 +178,7 @@ void saisieCouleur()
 void setup()
 {
     Serial.begin(115200);
+    Serial.println("Test de led.cpp ou ledbase.cpp ou rgbled.cpp");
     delay(50);
     triled.begin(); // démarrage du timer interne des leds
     essai();        // test des couleurs de base
