@@ -186,6 +186,7 @@ void setup()
     triled.setAutoExtinction(false); // 1s then 200ms fade
     //chercheCouleur();
     saisieCouleur();
+    Serial.println("Fin du setup");
 }
 
 void loop()
