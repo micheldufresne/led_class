@@ -85,7 +85,7 @@ bool RGBLed::estEteint()
     return (etatR == niveauOff && etatG == niveauOff && etatB == niveauOff);
 }
 
-void RGBLed::tickUpdate(uint64_t tick) override
+void RGBLed::tickUpdate(uint64_t tick)
 {
     if (bloquee)
         return; // on ignore toutes les commandes sauf debloque()

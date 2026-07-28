@@ -51,7 +51,7 @@ bool LED::estAllume()
     return (etat == niveauOn);
 }
 
-void LED::tickUpdate(uint64_t tick) override
+void LED::tickUpdate(uint64_t tick)
 {
     if (estEnFlash())
         return; // on ignore tout
