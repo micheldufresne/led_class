@@ -135,10 +135,10 @@ void RGBLed::tickUpdate(uint64_t tick) override
     }
 }
 
-void flash() override
+void RGBLed::flash()
 {
     LedBase::flash();
-    ledcWrite(canalR, niveauON);
-    ledcWrite(canalG, niveauON);
-    ledcWrite(canalB, niveauON);
+    ledcWrite(canalR, 255 - niveauOff);
+    ledcWrite(canalG, 255 - niveauOff);
+    ledcWrite(canalB, 255 - niveauOff);
 }

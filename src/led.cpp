@@ -90,7 +90,7 @@ void LED::tickUpdate(uint64_t tick) override
     }
 }
 
-void LED::flash() override
+void LED::flash()
 {
     LedBase::flash();
     ledcWrite(canal, niveauOn);

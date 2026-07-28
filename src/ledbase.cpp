@@ -1,4 +1,4 @@
-#include "LedBase.h"
+#include "ledbase.h"
 
 esp_timer_handle_t LedBase::timer = nullptr;
 uint64_t LedBase::tick = 0;
@@ -105,7 +105,7 @@ bool LedBase::estEnFlash()
     }
 }
 
-void LedBase::flash() override
+void LedBase::flash()
 {
     enFlash = true;
     flashDepuis = millis();
