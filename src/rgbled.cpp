@@ -85,7 +85,7 @@ bool RGBLed::estEteint()
     return (etatR == niveauOff && etatG == niveauOff && etatB == niveauOff);
 }
 
-void RGBLed::tickUpdate(uint64_t tick)
+void RGBLed::tickUpdate(uint64_t tick) override
 {
     if (bloquee)
         return; // on ignore toutes les commandes sauf debloque()
@@ -135,3 +135,10 @@ void RGBLed::tickUpdate(uint64_t tick)
     }
 }
 
+void flash() override
+{
+    LedBase::flash();
+    ledcWrite(canalR, niveauON);
+    ledcWrite(canalG, niveauON);
+    ledcWrite(canalB, niveauON);
+}

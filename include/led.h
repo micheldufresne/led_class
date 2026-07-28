@@ -11,6 +11,8 @@ public:
     void eteint();
     bool estEteint();
     bool estAllume();
+    void flash() override;
+
 private:
     void tickUpdate(uint64_t tick) override;
 

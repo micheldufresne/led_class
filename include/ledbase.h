@@ -17,6 +17,9 @@ class LedBase
         void setAutoExtinction(bool autoOFF);
         void bloque();
         void debloque();
+        virtual void flash();
+        bool estEnFlash();
+
     protected:    
         static void timerCallback(void *arg);
         static bool usedChannels[8]; // 8 canaux high-speed
@@ -34,4 +37,11 @@ class LedBase
         bool fading = false;
         uint32_t fadeStartTime = 0; // avec millis(), instant du démarrage de la décroissance
         uint32_t fadeDuration = 0;  // durée du fade en ms, 0=arrêt brutal sans fade
-};
+
+        // cas particulier du flash
+        bool enFlash = false;
+        uint16_t flashDepuis = 0;        // instant du début du flash
+                                         // le flash est prioritaire sur toutes les autres commandes
+                                         // après un flash le programme précédent se poursuit
+        const uint16_t dureeFlash = 100; // durée en ms d'un flash
+    };

@@ -90,3 +90,24 @@ void LedBase::timerCallback(void *arg)
         instances[i]->tickUpdate(tick); //à chaque instance de led, mets toi à jour
     }
 }
+
+bool LedBase::estEnFlash()
+{
+    if (!enFlash)
+        return false;
+    uint16_t m = millis() - flashDepuis;
+    if (m < dureeFlash)
+        return true; // on ignore tout, le flash est prioritaire
+    else
+    {
+        enFlash = false; // fin du flash
+        return false;
+    }
+}
+
+void LedBase::flash() override
+{
+    enFlash = true;
+    flashDepuis = millis();
+    // la couleur sera précisée dans l'objet fils
+}

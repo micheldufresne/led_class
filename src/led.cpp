@@ -51,8 +51,11 @@ bool LED::estAllume()
     return (etat == niveauOn);
 }
 
-void LED::tickUpdate(uint64_t tick)
+void LED::tickUpdate(uint64_t tick) override
 {
+    if (estEnFlash())
+        return; // on ignore tout
+
     if (bloquee) return; // led bloquée, on n'agit pas
     if (autoOff && active && !fading && tick >= finTick)
     {
@@ -85,4 +88,10 @@ void LED::tickUpdate(uint64_t tick)
             etat = newV;
         }
     }
+}
+
+void LED::flash() override
+{
+    LedBase::flash();
+    ledcWrite(canal, niveauOn);
 }
