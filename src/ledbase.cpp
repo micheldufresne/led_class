@@ -111,3 +111,8 @@ void LedBase::flash()
     flashDepuis = millis();
     // la couleur sera précisée dans l'objet fils
 }
+
+void LedBase::setDureeFlash(uint16_t duree)
+{
+    dureeFlash=duree;
+}

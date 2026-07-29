@@ -19,6 +19,7 @@ class LedBase
         void debloque();
         virtual void flash();
         bool estEnFlash();
+        void setDureeFlash(uint16_t duree);
 
     protected:    
         static void timerCallback(void *arg);
@@ -43,5 +44,5 @@ class LedBase
         uint16_t flashDepuis = 0;        // instant du début du flash
                                          // le flash est prioritaire sur toutes les autres commandes
                                          // après un flash le programme précédent se poursuit
-        const uint16_t dureeFlash = 100; // durée en ms d'un flash
+        uint16_t dureeFlash = 500; // durée en ms d'un flash
     };
