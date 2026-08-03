@@ -1,5 +1,5 @@
 #include "RGBLed.h"
-
+#include <Arduino.h>
 
 RGBLed::RGBLed(uint8_t pinR, uint8_t pinG, uint8_t pinB, uint8_t niveauOff)
     : pinR(pinR), pinG(pinG), pinB(pinB), niveauOff(niveauOff) {

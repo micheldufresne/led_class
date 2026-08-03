@@ -1,5 +1,6 @@
 #pragma once
 #include "LedBase.h"
+#include <Arduino.h>
 
 class LED : public LedBase
 {

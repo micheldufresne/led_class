@@ -1,5 +1,5 @@
 #include "LED.h"
-
+#include <Arduino.h>
 #define PWM_FREQ 5000
 #define PWM_RES 8
 
@@ -82,9 +82,7 @@ void LED::tickUpdate(uint64_t tick)
             float factor = 1.0f - (float)elapsed / fadeDuration; // de 1 à 0
             int16_t delta = (int16_t)fadeStart - (int16_t)niveauOff;
             uint8_t newV = niveauOff + delta * factor;
-            
             ledcWrite(canal, newV);
-
             etat = newV;
         }
     }

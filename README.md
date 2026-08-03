@@ -103,3 +103,8 @@ Désormais, l'arrêt automatique est désactivé, la led ne s'éteindra que si o
 >- J'ai fixé à 50ms le délai entre deux changements d'états. Ce qui fait que la temporisation avant l'extinction automatique est déterminée à 50ms près. De même la décroissance lumineuse est calculée toutes les 50ms. A l'usage, cette précision semble bien suffisante.
 >- C'est le même timer qui régule le fonctionnement de toutes les leds créées avec ce dépôt.
 
+### Ajout d'une méthode Flash :
+Une fois appelée, la led flash en blanc durant 500ms (par défaut), une fois le flash terminé, tout reprend normalement comme si rien ne s'était passé.
+>- L.flash()
+>- L.estEnFlash() renvoie true si led L est actuellement en flash et false sinon
+>- L.setDureeFlash(uint16_t duree) change la durée du prochain flash, duree est exprimé en ms.

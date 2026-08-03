@@ -1,6 +1,6 @@
 #pragma once
 #include <Arduino.h>
-#include "esp_timer.h"
+#include <esp_timer.h>
 
 #define TICK_MS 50
 #define TICK_US (TICK_MS * 1000)
@@ -41,8 +41,8 @@ class LedBase
 
         // cas particulier du flash
         bool enFlash = false;
-        uint16_t flashDepuis = 0;        // instant du début du flash
+        uint32_t flashDepuis = 0;        // instant du début du flash
                                          // le flash est prioritaire sur toutes les autres commandes
                                          // après un flash le programme précédent se poursuit
-        uint16_t dureeFlash = 500; // durée en ms d'un flash
+        uint32_t dureeFlash = 500; // durée en ms d'un flash
     };

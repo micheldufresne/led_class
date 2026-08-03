@@ -2,27 +2,12 @@
     "name": "LED_class",
     "version": "1.2.12",
     "description": "Une librairie pour gérer des LEDs simples et RGB (ESP32 / Arduino).",
-    "keywords": [
-        "led",
-        "rgb",
-        "timer"
-    ],
-    "repository":
-    {
+    "keywords": ["led", "rgb", "timer"],
+    "repository": {
         "type": "git",
         "url": "https://github.com/micheldufresne/led_class.git"
     },
-    "authors": [
-        {
-            "name": "Michel Dufresne"
-        }
-    ],
+    "authors": [{"name": "Michel Dufresne"}],
     "frameworks": "arduino",
-    "platforms": "espressif32",
-    "dependencies":
-    [
-        {
-            "name": "esp_timer.h"
-        }
-    ]
+    "platforms": "espressif32"
 }

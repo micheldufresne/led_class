@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "rgbled.h"
+#include "RGBLed.h"
 
 #define pinRouge 18
 #define pinVert 19
@@ -173,6 +173,23 @@ void saisieCouleur()
             }
         }
     }
+}
+
+void testflash()
+{
+    Serial.println("Test du flash");
+    triled.setCouleur(0xFF0000);
+    delay(2000);
+    Serial.println("Flash");
+    triled.flash();
+    delay(1000);
+    Serial.println("Flash");
+    triled.flash();
+    delay(1000);
+    Serial.println("Flash");
+    triled.flash();
+    delay(1000);
+    Serial.println("Fin du test du flash");
 }
 
 void setup()
