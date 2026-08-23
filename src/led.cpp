@@ -53,32 +53,47 @@ bool LED::estAllume()
 
 void LED::tickUpdate(uint64_t tick)
 {
-    if (estEnFlash())
-        return; // on ignore tout
+    if (enFlash)
+    {
+        if (estEnFlash()) // est encore en flash
+            return;       // on ignore tout
+        else
+            //fin du flash
+            enflash=false;
+            //tout reprend comme avant le flash
+    }  
+    
 
     if (bloquee) return; // led bloquée, on n'agit pas
+
     if (autoOff && active && !fading && tick >= finTick)
     {
         if (fadeDuration > 0)
         {
+            //fade doux
             fading = true;
             fadeStartTime = millis();
-            fadeStart = etat;
+            fadeStart = etat; //état au moment du début du fade
             
         } else {
+            //durée du fade=0, on éteint brutalement
             eteint();
+            //fading reste à false
         }
     }
+
     // fade progressif basé sur millis()
     if (fading)
     {
         uint32_t elapsed = millis() - fadeStartTime;
         if (elapsed >= fadeDuration)
         {
+            //fin du fade
             eteint();
         }
         else
         {
+            //décroissance lumineuse
             float factor = 1.0f - (float)elapsed / fadeDuration; // de 1 à 0
             int16_t delta = (int16_t)fadeStart - (int16_t)niveauOff;
             uint8_t newV = niveauOff + delta * factor;
@@ -90,6 +105,6 @@ void LED::tickUpdate(uint64_t tick)
 
 void LED::flash()
 {
-    LedBase::flash();
+    LedBase::flash(); //on retient le moment du départ du flash
     ledcWrite(canal, niveauOn);
 }

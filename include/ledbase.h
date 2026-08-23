@@ -11,7 +11,7 @@ class LedBase
 {
     public:
         LedBase();
-        virtual void tickUpdate(uint64_t tick) = 0; // appelée toutes les 50ms
+        virtual void tickUpdate(uint64_t tick) = 0; // appelée toutes les .. ms
         static void begin();
         void setAutoExtinction(bool autoOFF, uint16_t duree_ms, uint16_t fade_ms);
         void setAutoExtinction(bool autoOFF);
