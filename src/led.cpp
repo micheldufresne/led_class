@@ -3,8 +3,8 @@
 #define PWM_FREQ 5000
 #define PWM_RES 8
 
-LED::LED(uint8_t pin, uint8_t niveauOff)
-    : pin(pin), niveauOff(niveauOff)
+LED::LED(uint8_t pin0, uint8_t niveauOff0)
+    : LedBase(niveauOff0), pin(pin0)
 {
     //recherche d'un canal dispo
     canal = LedBase::allocateChannel();
@@ -12,21 +12,20 @@ LED::LED(uint8_t pin, uint8_t niveauOff)
         Serial.println("Erreur: plus de canaux LEDC disponibles");
         return;
     }
+    pinMode(pin0, OUTPUT);
     ledcSetup(canal, PWM_FREQ, PWM_RES);
-    ledcAttachPin(pin, canal);
+    ledcAttachPin(pin0, canal);
 
     eteint();
-    niveauOn = (niveauOff == LOW ? 255 : LOW);
 }
 
 void LED::eteint()
 {
     if (bloquee) return; //on ignore toutes les commandes sauf debloque()
-    {etat = niveauOff;
+    etat = niveauOff;
     ledcWrite(canal, niveauOff);
     active = false;
-    fading=false;}
-    
+    fading=false;    
 }
 
 void LED::allume()
@@ -53,13 +52,13 @@ bool LED::estAllume()
 
 void LED::tickUpdate(uint64_t tick)
 {
-    if (enFlash)
+    if (enFlash) //si actuellement en flash
     {
-        if (estEnFlash()) // est encore en flash
+        if (estEnFlash()) // le flash n'est pas encore terminé
             return;       // on ignore tout
         else
-            //fin du flash
-            enflash=false;
+            //le flash doit se terminer
+            enFlash=false;
             //tout reprend comme avant le flash
     }  
     

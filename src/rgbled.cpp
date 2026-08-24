@@ -1,8 +1,10 @@
 #include "RGBLed.h"
 #include <Arduino.h>
 
-RGBLed::RGBLed(uint8_t pinR, uint8_t pinG, uint8_t pinB, uint8_t niveauOff)
-    : pinR(pinR), pinG(pinG), pinB(pinB), niveauOff(niveauOff) {
+RGBLed::RGBLed(uint8_t pinR0, uint8_t pinG0, uint8_t pinB0, uint8_t niveauOff0)
+    : LedBase(niveauOff0), pinR(pinR0), pinG(pinG0), pinB(pinB0)
+
+{
     // assigner un canal unique par broche quelle que soit la led
     canalR = LedBase::allocateChannel();
     canalG = LedBase::allocateChannel();
@@ -10,6 +12,9 @@ RGBLed::RGBLed(uint8_t pinR, uint8_t pinG, uint8_t pinB, uint8_t niveauOff)
     pinMode(pinR, OUTPUT);
     pinMode(pinG, OUTPUT);
     pinMode(pinB, OUTPUT);
+
+    niveauOn = 255-niveauOff0;
+
     if (canalR < 0 || canalG < 0 || canalB < 0)
     {
         Serial.println("Erreur: pas assez de canaux LEDC");
@@ -87,10 +92,22 @@ bool RGBLed::estEteint()
 
 void RGBLed::tickUpdate(uint64_t tick)
 {
-    if (bloquee)
-        return; // on ignore toutes les commandes sauf debloque()
     if (!ready)
         return;
+
+    if (enFlash) // si actuellement en flash
+    {
+        if (estEnFlash()) // le flash n'est pas encore terminé
+            return;       // on ignore tout
+        else
+            // le flash doit se terminer
+            enFlash = false;
+        // tout reprend comme avant le flash
+    }
+
+    if (bloquee)
+        return; // on ignore toutes les commandes sauf debloque()
+
     if (autoOff && active && !fading && tick >= finTick)
     {
         if (fadeDuration > 0)

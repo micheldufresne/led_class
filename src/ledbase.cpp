@@ -6,7 +6,10 @@ LedBase *LedBase::instances[64];
 int LedBase::instanceCount = 0;
 bool LedBase::usedChannels[8] = {false};
 
-LedBase::LedBase(){
+LedBase::LedBase(uint8_t niveauOff0)
+    : niveauOff(niveauOff0), niveauOn(niveauOff0 == LOW ? HIGH : LOW)
+{
+
     if (instanceCount < 64)
         instances[instanceCount++] = this;
     
@@ -113,5 +116,5 @@ void LedBase::flash()
 
 void LedBase::setDureeFlash(uint16_t duree)
 {
-    dureeFlash=duree;
+    dureeFlash = duree;
 }
