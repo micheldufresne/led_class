@@ -1,14 +1,19 @@
 #include <Arduino.h>
-#include "RGBLed.h"
+#include "rgbled.h"
 
-#define pinRouge 18
-#define pinVert 19
-#define pinBleu 23
-#define niveauOff 255
-RGBLed triled(pinRouge, pinVert, pinBleu, niveauOff);
 
-void essai()
+constexpr int8_t pinRouge = 18;
+constexpr int8_t pinVert = 5;
+constexpr int8_t pinBleu = 17;
+RGBLed triled(pinRouge, pinVert, pinBleu, 255);
+
+constexpr int8_t pinBoutonFlash = 14;
+
+void setup()
 {
+    Serial.begin(115200);
+
+    triled.begin(); // démarrage du timer interne des leds
     Serial.println("Rouge");
     triled.setCouleur(255, 0, 0);
     delay(2000);
@@ -31,20 +36,40 @@ void essai()
     triled.eteint();
     delay(2000);
     Serial.println("Rebleu");
-    triled.setCouleur(0, 0, 255);    
+    triled.setCouleur(0, 0, 255);
     delay(2000);
     Serial.println("Auto extinction douce après 3 secondes et baisse pendant 1seconde");
-    triled.setAutoExtinction(true,3000,1000); // auto extinction douce après 3s et pendant 1s
+    triled.setAutoExtinction(true, 3000, 1000); // auto extinction douce après 3s et pendant 1s
     Serial.println("Rouge");
     triled.setCouleur(0xFF0000);
-    delay(3000+1000);
+    delay(3000 + 1000);
     Serial.println("Le rouge vient juste de s'éteindre");
     delay(2000);
     Serial.println("Jaune pendant 3s");
     triled.setCouleur(0x211500);
-    delay(3000+1000);
+    delay(3000 + 1000);
     Serial.println("Fin du test des couleurs de base");
     delay(4000);
+
+    triled.setDureeFlash(4000);
+    pinMode(pinBoutonFlash, INPUT_PULLDOWN);
+
+    while (true)
+    {
+        if (millis() % 2000 == 0 && triled.estEteint())
+        {
+            uint8_t r = rand() % 256;
+            uint8_t v = rand() % 256;
+            uint8_t b = rand() % 256;
+            triled.setCouleur(r, v, b);
+        }
+
+        if (digitalRead(pinBoutonFlash) == HIGH && !triled.estEnFlash())
+        {
+            triled.flash();
+            Serial.println("!");
+        }
+    }
 }
 
 bool parseHexColor(const String &in, uint32_t &outColor)
@@ -93,23 +118,28 @@ void chercheCouleur()
             {
                 if (r < 255)
                     r++;
-            } else if (c == 'e')
+            }
+            else if (c == 'e')
             {
                 if (r > 0)
                     r--;
-            } else if (c == 'b')
+            }
+            else if (c == 'b')
             {
                 if (b > 0)
                     b--;
-            } else if (c == 'n')
+            }
+            else if (c == 'n')
             {
                 if (b < 255)
                     b++;
-            } else if (c == 'c')
+            }
+            else if (c == 'c')
             {
                 if (v > 0)
                     v--;
-            } else if (c == 'v')
+            }
+            else if (c == 'v')
             {
                 if (v < 255)
                     v++;
@@ -118,14 +148,13 @@ void chercheCouleur()
             {
                 // afficher la couleur courante
                 Serial.printf("Couleur actuelle : r=%u v=%u b=%u\n", r, v, b);
-                
             }
-   
+
             while (Serial.available())
                 Serial.read(); // vider le buffer
             while (!Serial.available())
             {
-                for (uint8_t v2 = max(0,v-10); v2 < min(255,v+10); v2++)
+                for (uint8_t v2 = max(0, v - 10); v2 < min(255, v + 10); v2++)
                 {
                     triled.setCouleur(r, v2, b);
                     delay(20);
@@ -135,7 +164,6 @@ void chercheCouleur()
             while (Serial.available())
                 Serial.read(); // vider le buffer
         }
-        
     }
 }
 
@@ -175,35 +203,6 @@ void saisieCouleur()
     }
 }
 
-void testflash()
-{
-    Serial.println("Test du flash");
-    triled.setCouleur(0xFF0000);
-    delay(2000);
-    Serial.println("Flash");
-    triled.flash();
-    delay(1000);
-    Serial.println("Flash");
-    triled.flash();
-    delay(1000);
-    Serial.println("Flash");
-    triled.flash();
-    delay(1000);
-    Serial.println("Fin du test du flash");
-}
-
-void setup()
-{
-    Serial.begin(115200);
-    Serial.println("Test de led.cpp ou ledbase.cpp ou rgbled.cpp");
-    delay(50);
-    triled.begin(); // démarrage du timer interne des leds
-    essai();        // test des couleurs de base
-    delay(2000);
-    triled.setAutoExtinction(false); // 1s then 200ms fade
-    //chercheCouleur();
-    saisieCouleur();
-}
 
 void loop()
 {

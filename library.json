@@ -1,6 +1,6 @@
 {
     "name": "LED_class",
-    "version": "1.2.13",
+    "version": "1.2.14",
     "description": "Une librairie pour gérer des LEDs simples et RGB (ESP32 / Arduino).",
     "keywords": ["led", "rgb", "timer"],
     "repository": {

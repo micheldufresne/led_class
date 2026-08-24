@@ -31,7 +31,7 @@ RGBLed::RGBLed(uint8_t pinR0, uint8_t pinG0, uint8_t pinB0, uint8_t niveauOff0)
     ledcAttachPin(pinB, canalB);
 
     eteint();
-    ready = true; // la LED est prête
+    ready = true; // à laisser à la fin du constructeur
 }
 
 void RGBLed::eteint()
@@ -39,34 +39,34 @@ void RGBLed::eteint()
     if (bloquee)
         return; // on ignore toutes les commandes sauf debloque()
     etatR = etatG = etatB = niveauOff;
-    ledcWrite(canalR, niveauOff);
-    ledcWrite(canalG, niveauOff);
-    ledcWrite(canalB, niveauOff);
-    //Serial.println(niveauOff);
+    if (!enFlash)
+        appliquerEtat();
+
     active = false;
     fading = false;
 }
 
-
 void RGBLed::setCouleur(uint8_t r, uint8_t g, uint8_t b)
 {
     if (bloquee)
-        return; // on ignore toutes les commandes sauf debloque()
-    if (niveauOff==0) {
+        return;
+
+    if (niveauOff == 0)
+    {
         etatR = r;
         etatG = g;
         etatB = b;
-    } else {
-        etatR = 255-r;
-        etatG = 255-g;
-        etatB = 255-b;
     }
-    //Serial.printf("R=%u, V=%u, B=%u\n",etatR,etatG,etatB);
-    ledcWrite(canalR, etatR);
-    ledcWrite(canalG, etatG);
-    ledcWrite(canalB, etatB);
+    else
+    {
+        etatR = 255 - r;
+        etatG = 255 - g;
+        etatB = 255 - b;
+    }
 
-    // si autoOFF est actif, recalculer fin du fade
+    if (!enFlash)
+        appliquerEtat();
+
     if (autoOff && !fading)
     {
         finTick = LedBase::tick + dureeTicks;
@@ -90,66 +90,9 @@ bool RGBLed::estEteint()
     return (etatR == niveauOff && etatG == niveauOff && etatB == niveauOff);
 }
 
-void RGBLed::tickUpdate(uint64_t tick)
+bool RGBLed::estAllumee()
 {
-    if (!ready)
-        return;
-
-    if (enFlash) // si actuellement en flash
-    {
-        if (estEnFlash()) // le flash n'est pas encore terminé
-            return;       // on ignore tout
-        else
-            // le flash doit se terminer
-            enFlash = false;
-        // tout reprend comme avant le flash
-    }
-
-    if (bloquee)
-        return; // on ignore toutes les commandes sauf debloque()
-
-    if (autoOff && active && !fading && tick >= finTick)
-    {
-        if (fadeDuration > 0)
-        {
-            fading = true;
-            fadeStartTime = millis();
-            fadeStartR = etatR;
-            fadeStartG = etatG;
-            fadeStartB = etatB;
-        }
-        else
-        {
-            eteint();
-        }
-    }
-    // fade progressif basé sur millis()
-    if (fading)
-    {
-        uint32_t elapsed = millis() - fadeStartTime;
-        if (elapsed >= fadeDuration)
-        {
-            eteint();
-        }
-        else
-        {
-            float factor = 1.0f - (float)elapsed / fadeDuration; // de 1 à 0
-            int16_t deltaR = (int16_t)fadeStartR - (int16_t)niveauOff;
-            uint8_t newR = niveauOff + deltaR * factor;
-            int16_t deltaG = (int16_t)fadeStartG - (int16_t)niveauOff;
-            uint8_t newG = niveauOff + deltaG * factor;
-            int16_t deltaB = (int16_t)fadeStartB - (int16_t)niveauOff;
-            uint8_t newB = niveauOff + deltaB * factor;
-
-            ledcWrite(canalR, newR);
-            ledcWrite(canalG, newG);
-            ledcWrite(canalB, newB);
-
-            etatR = newR;
-            etatG = newG;
-            etatB = newB;
-        }
-    }
+    return (!estEteint());
 }
 
 void RGBLed::flash()
@@ -158,4 +101,41 @@ void RGBLed::flash()
     ledcWrite(canalR, 255 - niveauOff);
     ledcWrite(canalG, 255 - niveauOff);
     ledcWrite(canalB, 255 - niveauOff);
+}
+
+void RGBLed::debutFade()
+{
+    fadeStartR = etatR;
+    fadeStartG = etatG;
+    fadeStartB = etatB;
+}
+
+void RGBLed::appliquerFade(float factor)
+{
+    int16_t deltaR = (int16_t)fadeStartR - (int16_t)niveauOff;
+    int16_t deltaG = (int16_t)fadeStartG - (int16_t)niveauOff;
+    int16_t deltaB = (int16_t)fadeStartB - (int16_t)niveauOff;
+
+    uint8_t newR = niveauOff + deltaR * factor;
+    uint8_t newG = niveauOff + deltaG * factor;
+    uint8_t newB = niveauOff + deltaB * factor;
+
+    etatR = newR;
+    etatG = newG;
+    etatB = newB;
+
+    if (!enFlash)
+        appliquerEtat();
+}
+
+void RGBLed::eteintPourTick()
+{
+    eteint();
+}
+
+void RGBLed::appliquerEtat()
+{
+    ledcWrite(canalR, etatR);
+    ledcWrite(canalG, etatG);
+    ledcWrite(canalB, etatB);
 }

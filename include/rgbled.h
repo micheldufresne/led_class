@@ -11,6 +11,7 @@ public:
     void setCouleur(uint8_t r, uint8_t g, uint8_t b);  
     void setCouleur(uint32_t hexColor); // hexcolor de la forme : 0x10A0FF
     bool estEteint();
+    bool estAllumee();
     void flash() override;
 
 private : 
@@ -21,6 +22,9 @@ private :
     uint8_t canalR, canalG, canalB; // canaux PWM
     uint16_t fadeStartR = 0, fadeStartG = 0, fadeStartB = 0;
 
-    void tickUpdate(uint64_t tick) override;
+    void appliquerEtat() override;
+    void debutFade() override;
+    void appliquerFade(float factor) override;
+    void eteintPourTick() override;
 };
 

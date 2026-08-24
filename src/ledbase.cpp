@@ -55,6 +55,7 @@ void LedBase::setAutoExtinction(bool autoOFF0, uint16_t duree_ms, uint16_t fade_
         dureeTicks = (duree_ms / TICK_MS);
         if (dureeTicks == 0)
             dureeTicks = 1;
+
         fadeDuration = fade_ms; //durée du passage à Off
     }
 }
@@ -88,7 +89,6 @@ void LedBase::timerCallback(void *arg)
 {
     //appelée régulièrement par le timer toutes les 50ms
     tick++;
-
     for (int i = 0; i < instanceCount; i++)
     {
         instances[i]->tickUpdate(tick); //à chaque instance de led, mets toi à jour
@@ -117,4 +117,54 @@ void LedBase::flash()
 void LedBase::setDureeFlash(uint16_t duree)
 {
     dureeFlash = duree;
+}
+
+void LedBase::tickUpdate(uint64_t tick)
+{
+    if (!ready)
+        return;
+
+    if (enFlash)
+    {
+        if (estEnFlash())
+            return;
+
+        enFlash = false;
+        appliquerEtat(); // dès que le flash se termine, l'état mémorisé est réappliqué
+    }
+
+    if (bloquee)
+        return;
+
+    if (autoOff && active && !fading && tick >= finTick)
+    {
+        if (fadeDuration > 0)
+        {
+            fading = true;
+            fadeStartTime = millis();
+
+            debutFade();
+        }
+        else
+        {
+            eteintPourTick();
+        }
+    }
+
+    if (fading)
+    {
+        uint32_t elapsed = millis() - fadeStartTime;
+
+        if (elapsed >= fadeDuration)
+        {
+            eteintPourTick();
+        }
+        else
+        {
+            float factor = 1.0f -
+                           (float)elapsed / fadeDuration;
+
+            appliquerFade(factor);
+        }
+    }
 }
